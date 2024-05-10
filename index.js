@@ -1,19 +1,14 @@
-function deserialize(data) {
-  if (!data.length) return null;
-  const root = new TreeNode(data.shift());
-  const queue = [root];
-  while (queue.length) {
-    const node = queue.shift();
-    const leftVal = data.shift();
-    if (leftVal !== undefined) {
-      node.left = new TreeNode(leftVal);
-      queue.push(node.left);
-    }
-    const rightVal = data.shift();
-    if (rightVal !== undefined) {
-      node.right = new TreeNode(rightVal);
-      queue.push(node.right);
+function lengthOfLIS(nums) {
+  if (nums.length === 0) return 0;
+  const dp = new Array(nums.length).fill(1);
+  let max = 1;
+  for (let i = 1; i < nums.length; i++) {
+    for (let j = 0; j < i; j++) {
+      if (nums[i] > nums[j]) {
+        dp[i] = Math.max(dp[i], dp[j] + 1);
+        max = Math.max(max, dp[i]);
+      }
     }
   }
-  return root;
+  return max;
 }
