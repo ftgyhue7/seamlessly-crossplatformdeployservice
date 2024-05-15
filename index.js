@@ -1,29 +1,21 @@
-const heapSort = (arr) => {
-  const heapify = (arr, n, i) => {
-    let largest = i;
-    const left = 2 * i + 1;
-    const right = 2 * i + 2;
-    if (left < n && arr[left] > arr[largest]) {
-      largest = left;
+function canPartitionKSubsets(nums, k) {
+  const sum = nums.reduce((acc, val) => acc + val, 0);
+  if (sum % k !== 0) return false;
+  const target = sum / k;
+  nums.sort((a, b) => b - a);
+  if (nums[0] > target) return false;
+  const visited = new Array(nums.length).fill(false);
+  return backtrack(0, 0, k);
+  function backtrack(start, currentSum, groups) {
+    if (groups === 1) return true;
+    if (currentSum === target) return backtrack(0, 0, groups - 1);
+    for (let i = start; i < nums.length; i++) {
+      if (!visited[i] && currentSum + nums[i] <= target) {
+        visited[i] = true;
+        if (backtrack(i + 1, currentSum + nums[i], groups)) return true;
+        visited[i] = false;
+      }
     }
-    if (right < n && arr[right] > arr[largest]) {
-      largest = right;
-    }
-    if (largest !== i) {
-      [arr[i], arr[largest]] = [arr[largest], arr[i]];
-      heapify(arr, n, largest);
-    }
-  };
-  const buildHeap = (arr) => {
-    const n = arr.length;
-    for (let i = Math.floor(n / 2) - 1; i >= 0; i--) {
-      heapify(arr, n, i);
-    }
-  };
-  buildHeap(arr);
-  for (let i = arr.length - 1; i > 0; i--) {
-    [arr[0], arr[i]] = [arr[i], arr[0]];
-    heapify(arr, i, 0);
+    return false;
   }
-  return arr;
-};
+}
